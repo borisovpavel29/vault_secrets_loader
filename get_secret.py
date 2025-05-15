@@ -25,7 +25,6 @@ def get_secret_value(vault_url, token, secret_path, secret_key):
         response = requests.get(secret_url, headers=headers)
         response.raise_for_status()
         data = response.json()
-        # Поддержка версии 2 хранилища Vault
         secret_data = data["data"]["data"] if "data" in data and "data" in data["data"] else data["data"]
         return secret_data.get(secret_key, "")
     except Exception as e:
@@ -37,7 +36,11 @@ if __name__ == "__main__":
         print("Usage: vault_secret.py <VAULT_URL> <VAULT_ROLE_ID> <VAULT_SECRET_ID> <VAULT_SECRET_PATH> <SECRET_KEY>")
         sys.exit(1)
 
-    vault_url, role_id, secret_id, secret_path, secret_key = sys.argv[1:6]
+    vault_url      = sys.argv[1]
+    role_id        = sys.argv[2]
+    secret_id      = sys.argv[3]
+    secret_path    = sys.argv[4].lower()
+    secret_key     = sys.argv[5]
 
     token = get_vault_token(vault_url, role_id, secret_id)
     secret_value = get_secret_value(vault_url, token, secret_path, secret_key)
